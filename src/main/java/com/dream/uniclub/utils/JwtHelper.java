@@ -15,12 +15,22 @@ public class JwtHelper {
     @Value("${jwts.key}")
     private String jwtKey;
 
-
     public String generateToken(String data) {
         // Biến key kiểu string đã lưu trữ trc đó thành SecretKey
         SecretKey secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtKey));
         String token = Jwts.builder().signWith(secretKey).subject(data).compact();
 
         return token;
+    }
+
+    public String decodeToken(String token) {
+        SecretKey secretKey = Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(jwtKey));
+
+        return Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .getSubject();
     }
 }
