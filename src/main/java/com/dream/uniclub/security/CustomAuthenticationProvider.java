@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 
 @Component
-public class CustomAuthenProvider implements AuthenticationProvider {
+public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Autowired
     AuthService authService;
@@ -23,7 +23,6 @@ public class CustomAuthenProvider implements AuthenticationProvider {
         String password = authentication.getCredentials().toString();
 
         AuthRequest authRequest = new AuthRequest(username, password);
-
         boolean isSuccess = authService.checkLogin(authRequest);
 
         if (isSuccess) {
@@ -35,7 +34,7 @@ public class CustomAuthenProvider implements AuthenticationProvider {
 
     @Override
     public boolean supports(Class<?> authentication) {
-
+        // được sử dụng để kiểm tra xem authentication có phải là UsernamePasswordAuthenticationToken hay không.
         return authentication.equals(UsernamePasswordAuthenticationToken.class);
     }
 }

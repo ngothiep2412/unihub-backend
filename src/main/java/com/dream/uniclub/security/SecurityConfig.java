@@ -26,7 +26,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationProvider(HttpSecurity http, CustomAuthenProvider customAuthenProvider) throws Exception {
+    public AuthenticationManager authenticationProvider(HttpSecurity http, CustomAuthenticationProvider customAuthenProvider) throws Exception {
         return http.getSharedObject(AuthenticationManagerBuilder.class)
                 .authenticationProvider(customAuthenProvider)
                 .build();
