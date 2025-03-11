@@ -2,7 +2,7 @@ package com.dream.uniclub.service.imp;
 
 import com.dream.uniclub.entity.UserEntity;
 import com.dream.uniclub.repository.UserRepository;
-import com.dream.uniclub.reques.AuthRequest;
+import com.dream.uniclub.request.AuthRequest;
 import com.dream.uniclub.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;

@@ -1,4 +1,4 @@
-package com.dream.uniclub.reques;
+package com.dream.uniclub.request;
 
 //@Data
 //public class AuthRequest {

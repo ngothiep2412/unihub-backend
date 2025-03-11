@@ -1,6 +1,6 @@
 package com.dream.uniclub.service;
 
-import com.dream.uniclub.reques.AuthRequest;
+import com.dream.uniclub.request.AuthRequest;
 
 /**
  * {
