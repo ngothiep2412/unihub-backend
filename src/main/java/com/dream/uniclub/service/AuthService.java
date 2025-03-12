@@ -1,6 +1,9 @@
 package com.dream.uniclub.service;
 
+import com.dream.uniclub.dto.RoleDTO;
 import com.dream.uniclub.request.AuthRequest;
+
+import java.util.List;
 
 /**
  * {
@@ -11,5 +14,5 @@ import com.dream.uniclub.request.AuthRequest;
  */
 
 public interface AuthService {
-    boolean checkLogin(AuthRequest authRequest);
+    List<RoleDTO> checkLogin(AuthRequest authRequest);
 }

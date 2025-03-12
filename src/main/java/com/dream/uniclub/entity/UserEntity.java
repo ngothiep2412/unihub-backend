@@ -19,6 +19,7 @@ public class UserEntity {
     @Column(name = "full_name")
     private String fullName;
 
-    @Column(name = "id_role")
-    private int idRole;
+    @ManyToOne
+    @JoinColumn(name = "id_role")
+    private RoleEntity role;
 }

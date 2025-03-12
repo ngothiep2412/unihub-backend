@@ -1,5 +1,6 @@
 package com.dream.uniclub.security;
 
+import com.dream.uniclub.dto.RoleDTO;
 import com.dream.uniclub.request.AuthRequest;
 import com.dream.uniclub.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,9 +8,12 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {
@@ -23,10 +27,17 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String password = authentication.getCredentials().toString();
 
         AuthRequest authRequest = new AuthRequest(username, password);
-        boolean isSuccess = authService.checkLogin(authRequest);
+        List<RoleDTO> roleDTOs = authService.checkLogin(authRequest);
 
-        if (isSuccess) {
-            return new UsernamePasswordAuthenticationToken("", "", new ArrayList<>());
+        if (!roleDTOs.isEmpty()) {
+            List<GrantedAuthority> authorities = new ArrayList<>();  // chỉnh lai Stream API
+
+            roleDTOs.forEach(roleDTO -> {
+                SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(roleDTO.getName());
+                authorities.add(simpleGrantedAuthority);
+            });
+
+            return new UsernamePasswordAuthenticationToken("", "", authorities);
         } else {
             return null;
         }
