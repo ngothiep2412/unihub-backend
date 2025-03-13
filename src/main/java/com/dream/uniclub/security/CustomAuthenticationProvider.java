@@ -1,6 +1,7 @@
 package com.dream.uniclub.security;
 
 import com.dream.uniclub.dto.RoleDTO;
+import com.dream.uniclub.exception.AuthenException;
 import com.dream.uniclub.request.AuthRequest;
 import com.dream.uniclub.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
             return new UsernamePasswordAuthenticationToken("", "", authorities);
         } else {
-            return null;
+            throw new AuthenException("Login failed");
         }
     }
 
