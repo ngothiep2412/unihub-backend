@@ -10,7 +10,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -45,13 +43,14 @@ public class CustomFilter extends OncePerRequestFilter {
                     }
                 });
 
-                List<GrantedAuthority> authorities = new ArrayList<>();
+//                List<GrantedAuthority> authorities = new ArrayList<>();
+//                authorityDTOS.forEach(authorityDTO -> {
+//                    SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(authorityDTO.getAuthority());
+//                    authorities.add(simpleGrantedAuthority);
+//                });
 
-                authorityDTOS.forEach(authorityDTO -> {
-                    SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(authorityDTO.getAuthority());
-
-                    authorities.add(simpleGrantedAuthority);
-                });
+                List<SimpleGrantedAuthority> authorities = authorityDTOS.stream().map(item ->
+                        new SimpleGrantedAuthority(item.getAuthority())).toList();
 
                 UsernamePasswordAuthenticationToken authenticationToken =
                         new UsernamePasswordAuthenticationToken("", "", authorities);

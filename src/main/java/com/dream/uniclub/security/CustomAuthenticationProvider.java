@@ -8,11 +8,8 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -30,12 +27,17 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         List<RoleDTO> roleDTOs = authService.checkLogin(authRequest);
 
         if (!roleDTOs.isEmpty()) {
-            List<GrantedAuthority> authorities = new ArrayList<>();  // chỉnh lai Stream API
+            // Stream API
+            // map(): Cho phép biến đổi kiểu dữ liệu gốc thành kiểu dữ liệu khác trong quá trình duyệt mảng/đối tg
+            List<SimpleGrantedAuthority> authorities = roleDTOs.stream().map(item ->
+                    new SimpleGrantedAuthority(item.getName())).toList();
 
-            roleDTOs.forEach(roleDTO -> {
-                SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(roleDTO.getName());
-                authorities.add(simpleGrantedAuthority);
-            });
+//            List<GrantedAuthority> authorities = new ArrayList<>();  // chỉnh lai Stream API
+//
+//            roleDTOs.forEach(roleDTO -> {
+//                SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(roleDTO.getName());
+//                authorities.add(simpleGrantedAuthority);
+//            });
 
             return new UsernamePasswordAuthenticationToken("", "", authorities);
         } else {
