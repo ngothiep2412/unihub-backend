@@ -9,8 +9,6 @@ import com.dream.uniclub.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import javax.management.relation.Role;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +33,7 @@ public class AuthServiceImp implements AuthService {
             roleDTO.setId(userRole.getId());
             roleDTO.setName(userRole.getName()); // chờ bữa sau dùng Stream API
             roles.add(roleDTO);
+
         }
 
         return roles;

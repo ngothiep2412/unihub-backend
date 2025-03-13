@@ -40,7 +40,7 @@ public class SecurityConfig {
                                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))  // chặn session
                 .authorizeHttpRequests(request -> {
                     request.requestMatchers("/authen").permitAll();
-                    request.requestMatchers("/product").hasRole("ADMIN");
+                    request.requestMatchers("/product").hasAuthority("ADMIN"); // hasRole() -> thì phải lưu role là ROLE_ADMIN
                     request.anyRequest().authenticated();
                 })
                 .addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class)

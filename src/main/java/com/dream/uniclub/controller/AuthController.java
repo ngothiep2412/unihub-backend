@@ -1,12 +1,12 @@
 package com.dream.uniclub.controller;
 
-
 import com.dream.uniclub.request.AuthRequest;
 import com.dream.uniclub.response.BaseResponse;
 import com.dream.uniclub.service.AuthService;
 import com.dream.uniclub.utils.JwtHelper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +37,7 @@ public class AuthController {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @PostMapping
-    public ResponseEntity<?> authen(@RequestBody AuthRequest authRequest) throws JsonProcessingException {
+    public ResponseEntity<?> authen(@Valid @RequestBody AuthRequest authRequest) throws JsonProcessingException {
 
         // Tạo key RSA
 //        SecretKey secretKey = Jwts.SIG.HS256.key().build();
