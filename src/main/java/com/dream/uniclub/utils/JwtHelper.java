@@ -1,13 +1,15 @@
 package com.dream.uniclub.utils;
 
+import java.util.Date;
+
+import javax.crypto.SecretKey;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import javax.crypto.SecretKey;
-import java.util.Date;
 
 @Component
 public class JwtHelper {
@@ -15,7 +17,7 @@ public class JwtHelper {
     @Value("${jwts.key}")
     private String jwtKey;
 
-    private int expiredTime = 8 * 60 * 60 * 1000;
+    private final int expiredTime = 8 * 60 * 60 * 1000;
 
     public String generateToken(String data) {
         // Biến key kiểu string đã lưu trữ trc đó thành SecretKey

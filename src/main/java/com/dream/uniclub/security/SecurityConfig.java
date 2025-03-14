@@ -1,6 +1,5 @@
 package com.dream.uniclub.security;
 
-import com.dream.uniclub.filter.CustomFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,7 +13,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@Configuration  // quét config trc khi start
+import com.dream.uniclub.filter.CustomFilter;
+
+@Configuration // quét config trc khi start
 @EnableWebSecurity
 public class SecurityConfig {
 
@@ -25,7 +26,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationProvider(HttpSecurity http, CustomAuthenticationProvider customAuthenProvider) throws Exception {
+    public AuthenticationManager authenticationProvider(HttpSecurity http,
+            CustomAuthenticationProvider customAuthenProvider) throws Exception {
         return http.getSharedObject(AuthenticationManagerBuilder.class)
                 .authenticationProvider(customAuthenProvider)
                 .build();
@@ -36,11 +38,11 @@ public class SecurityConfig {
         return http
                 .csrf((AbstractHttpConfigurer::disable)) // (csfr -> csfr.disable())
                 .sessionManagement(
-                        session ->
-                                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))  // chặn session
+                        session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // chặn session
                 .authorizeHttpRequests(request -> {
                     request.requestMatchers("/authen").permitAll();
-                    request.requestMatchers("/product").hasAuthority("ADMIN"); // hasRole() -> thì phải lưu role là ROLE_ADMIN
+                    request.requestMatchers("/product").hasAuthority("ADMIN"); // hasRole() -> thì phải lưu role là
+                                                                               // ROLE_ADMIN
                     request.anyRequest().authenticated();
                 })
                 .addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class)

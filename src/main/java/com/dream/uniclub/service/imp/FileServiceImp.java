@@ -1,17 +1,17 @@
 package com.dream.uniclub.service.imp;
 
-import com.dream.uniclub.exception.SaveFileException;
-import com.dream.uniclub.service.FileService;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.dream.uniclub.exception.SaveFileException;
+import com.dream.uniclub.service.FileService;
 
 @Service
 public class FileServiceImp implements FileService {
@@ -26,10 +26,11 @@ public class FileServiceImp implements FileService {
             if (!Files.exists(rootPath)) {
                 Files.createDirectory(rootPath);
             }
-            Files.copy(file.getInputStream(), rootPath.resolve(file.getOriginalFilename()), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(file.getInputStream(), rootPath.resolve(file.getOriginalFilename()),
+                    StandardCopyOption.REPLACE_EXISTING);
 
-        } catch (Exception e) {
-           throw new SaveFileException(e.getMessage());
+        } catch (IOException e) {
+            throw new SaveFileException(e.getMessage());
         }
 
     }
