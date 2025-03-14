@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dream.uniclub.request.AddProductRequest;
+import com.dream.uniclub.response.BaseResponse;
 import com.dream.uniclub.service.ProductService;
 
 @RestController
@@ -20,6 +21,12 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<?> addProduct(AddProductRequest addProductRequest) {
         productService.addProduct(addProductRequest);
+
+        BaseResponse baseResponse = new BaseResponse();
+
+        baseResponse.setStatusCode(200);
+
+        baseResponse.setMessage("Add product success");
 
         return new ResponseEntity<>("Hello add product", HttpStatus.OK);
     }
