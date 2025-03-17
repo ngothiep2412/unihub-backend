@@ -39,6 +39,7 @@ public class FileServiceImp implements FileService {
     }
 
     @Override
+    @SuppressWarnings("UseSpecificCatch")
     public Resource loadFile(String filename) {
         try {
             Path path = Paths.get(root);

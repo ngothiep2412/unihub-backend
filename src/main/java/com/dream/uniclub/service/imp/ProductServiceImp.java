@@ -1,8 +1,11 @@
 package com.dream.uniclub.service.imp;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.dream.uniclub.dto.ProductDTO;
 import com.dream.uniclub.entity.BrandEntity;
 import com.dream.uniclub.entity.ColorEntity;
 import com.dream.uniclub.entity.ProductEntity;
@@ -62,4 +65,25 @@ public class ProductServiceImp implements ProductService {
 
         fileService.saveFile(addProductRequest.files());
     }
+
+    @Override
+    public List<ProductDTO> getProduct() {
+        // List<ProductEntity> listProductEntities = productRepository.findAll();
+
+        List<ProductDTO> listProductDTOs = productRepository.findAll().stream().map(item -> {
+            ProductDTO productDTO = new ProductDTO();
+            productDTO.setName(item.getName());
+            productDTO.setPrice(item.getPrice());
+            if (!item.getVariants().isEmpty()) {
+                productDTO.setLink("http://localhost:8080/file/" + item.getVariants().get(0).getImages());
+            } else {
+                productDTO.setLink("");
+            }
+
+            return productDTO;
+        }).toList();
+
+        return listProductDTOs;
+    }
+
 }

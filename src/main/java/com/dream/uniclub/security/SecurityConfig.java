@@ -1,7 +1,11 @@
 package com.dream.uniclub.security;
 
+import java.util.Arrays;
+
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,6 +16,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.dream.uniclub.filter.CustomFilter;
 
@@ -26,6 +33,19 @@ public class SecurityConfig {
     }
 
     @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("*"));
+        configuration.setAllowedMethods(Arrays.asList("*"));
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+
+        source.registerCorsConfiguration("/**", configuration);
+
+        return source;
+    }
+
+    @Bean
     public AuthenticationManager authenticationProvider(HttpSecurity http,
             CustomAuthenticationProvider customAuthenProvider) throws Exception {
         return http.getSharedObject(AuthenticationManagerBuilder.class)
@@ -34,14 +54,17 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, CustomFilter customFilter) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, CustomFilter customFilter,
+            @Qualifier("corsConfigurationSource") CorsConfigurationSource corsSource) throws Exception {
         return http
                 .csrf((AbstractHttpConfigurer::disable)) // (csfr -> csfr.disable())
+                .cors(cors -> cors.configurationSource(corsSource))
                 .sessionManagement(
                         session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // chặn session
                 .authorizeHttpRequests(request -> {
                     request.requestMatchers("/authen", "/file/**").permitAll();
-                    request.requestMatchers("/product").hasAuthority("ADMIN"); // hasRole() -> thì phải lưu role là
+                    request.requestMatchers(HttpMethod.GET, "/product").permitAll();
+                    request.requestMatchers("/product").hasAuthority("ADMIN"); // hasRole() -> thì phải lưu role là //
                                                                                // ROLE_ADMIN
                     request.anyRequest().authenticated();
                 })

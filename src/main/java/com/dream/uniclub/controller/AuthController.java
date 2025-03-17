@@ -36,6 +36,7 @@ public class AuthController {
 
         private final ObjectMapper objectMapper = new ObjectMapper();
 
+        @SuppressWarnings("unchecked")
         @PostMapping
         public ResponseEntity<?> authen(@Valid @RequestBody AuthRequest authRequest) throws JsonProcessingException {
 
