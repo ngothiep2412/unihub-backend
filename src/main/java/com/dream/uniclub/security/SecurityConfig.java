@@ -66,6 +66,7 @@ public class SecurityConfig {
                     request.requestMatchers(HttpMethod.GET, "/product").permitAll();
                     request.requestMatchers("/product").hasAuthority("ADMIN"); // hasRole() -> thì phải lưu role là //
                                                                                // ROLE_ADMIN
+                    request.requestMatchers("/category").permitAll();
                     request.anyRequest().authenticated();
                 })
                 .addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class)
