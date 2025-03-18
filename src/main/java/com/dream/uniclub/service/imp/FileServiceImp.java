@@ -7,9 +7,12 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.dream.uniclub.exception.FileNotFoundException;
 import com.dream.uniclub.exception.SaveFileException;
 import com.dream.uniclub.service.FileService;
 
@@ -33,5 +36,22 @@ public class FileServiceImp implements FileService {
             throw new SaveFileException(e.getMessage());
         }
 
+    }
+
+    @Override
+    @SuppressWarnings("UseSpecificCatch")
+    public Resource loadFile(String filename) {
+        try {
+            Path path = Paths.get(root);
+            Path file = path.resolve(filename);
+            Resource resource = new UrlResource(file.toUri());
+            if (resource.exists() || resource.isReadable()) {
+                return resource;
+            } else {
+                throw new FileNotFoundException(filename);
+            }
+        } catch (Exception e) {
+            throw new FileNotFoundException(e.getMessage());
+        }
     }
 }
