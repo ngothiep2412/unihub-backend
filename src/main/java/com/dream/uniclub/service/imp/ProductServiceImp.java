@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -76,7 +77,9 @@ public class ProductServiceImp implements ProductService {
     public List<ProductDTO> getProduct() {
         // List<ProductEntity> listProductEntities = productRepository.findAll();
 
-        List<ProductDTO> listProductDTOs = productRepository.findAll().stream().map(item -> {
+        PageRequest page = PageRequest.of(0, 4);
+
+        List<ProductDTO> listProductDTOs = productRepository.findAll(page).stream().map(item -> {
             ProductDTO productDTO = new ProductDTO();
             productDTO.setId(item.getId());
             productDTO.setName(item.getName());

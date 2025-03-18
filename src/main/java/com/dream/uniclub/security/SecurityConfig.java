@@ -35,11 +35,13 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*"));
-        configuration.setAllowedMethods(Arrays.asList("*"));
+        configuration.setAllowedOrigins(Arrays.asList("*")); // Allow all origins
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Allow specific
+                                                                                                   // methods
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept")); // Allow specific
+                                                                                                   // headers
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-
         source.registerCorsConfiguration("/**", configuration);
 
         return source;
@@ -63,9 +65,11 @@ public class SecurityConfig {
                         session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // chặn session
                 .authorizeHttpRequests(request -> {
                     request.requestMatchers("/authen", "/file/**").permitAll();
-                    request.requestMatchers(HttpMethod.GET, "/product").permitAll();
-                    request.requestMatchers("/product").hasAuthority("ADMIN"); // hasRole() -> thì phải lưu role là //
-                                                                               // ROLE_ADMIN
+                    // request.requestMatchers(HttpMethod.GET, "/product").has
+                    request.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
+
+                    request.requestMatchers("/product").hasAuthority("USER"); // hasRole() -> thì phải lưu role là //
+                                                                              // ROLE_ADMIN
                     request.requestMatchers("/category", "/brand").permitAll();
 
                     request.anyRequest().authenticated();
