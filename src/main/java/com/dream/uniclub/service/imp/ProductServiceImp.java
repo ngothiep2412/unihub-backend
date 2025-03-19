@@ -1,16 +1,16 @@
 package com.dream.uniclub.service.imp;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import com.dream.uniclub.dto.ColorDTO;
 import com.dream.uniclub.dto.ProductDTO;
+import com.dream.uniclub.dto.SizeDTO;
 import com.dream.uniclub.entity.BrandEntity;
-import com.dream.uniclub.entity.CategoryEntity;
 import com.dream.uniclub.entity.ColorEntity;
 import com.dream.uniclub.entity.ProductEntity;
 import com.dream.uniclub.entity.SizeEntity;
@@ -31,9 +31,6 @@ public class ProductServiceImp implements ProductService {
 
     @Autowired
     VariantRepository variantRepository;
-
-    @Autowired
-    JdbcTemplate jdbcTemplate;
 
     @Autowired
     FileService fileService;
@@ -94,39 +91,100 @@ public class ProductServiceImp implements ProductService {
             return productDTO;
         }).toList();
 
-        String categorySql = """
-                SELECT p.id as product_id, c.id as category_id, c.name as category_name
-                FROM product p
-                LEFT JOIN product_category pc ON p.id = pc.id_product
-                LEFT JOIN category c on c.id = pc.id_category
-                """;
+        // String categorySql = """
+        // SELECT p.id as product_id, c.id as category_id, c.name as category_name
+        // FROM product p
+        // LEFT JOIN product_category pc ON p.id = pc.id_product
+        // LEFT JOIN category c on c.id = pc.id_category
+        // """;
 
-        jdbcTemplate.query(categorySql, (rs) -> {
-            int productId = rs.getInt("product_id");
-            int categoryId = rs.getInt("category_id");
+        // jdbcTemplate.query(categorySql, (rs) -> {
+        // int productId = rs.getInt("product_id");
+        // int categoryId = rs.getInt("category_id");
 
-            if (categoryId != 0) {
-                CategoryEntity category = CategoryEntity.builder()
-                        .id(categoryId)
-                        .name(rs.getString("category_name"))
-                        .build();
+        // if (categoryId != 0) {
+        // CategoryEntity category = CategoryEntity.builder()
+        // .id(categoryId)
+        // .name(rs.getString("category_name"))
+        // .build();
 
-                listProductDTOs.stream().filter(p -> p.getId() == productId)
-                        .findFirst()
-                        .ifPresent(p -> {
-                            System.out.println("Kiểm tra p" + p);
-                            if (p.getCategories() == null) {
-                                p.setCategories(new ArrayList<>());
-                            }
+        // listProductDTOs.stream().filter(p -> p.getId() == productId)
+        // .findFirst()
+        // .ifPresent(p -> {
+        // System.out.println("Kiểm tra p" + p);
+        // if (p.getCategories() == null) {
+        // p.setCategories(new ArrayList<>());
+        // }
 
-                            if (!p.getCategories().contains(category)) {
-                                p.getCategories().add(category);
-                            }
+        // if (!p.getCategories().contains(category)) {
+        // p.getCategories().add(category);
+        // }
 
-                        });
-            }
-        });
+        // });
+        // }
+        // });
         return listProductDTOs;
+    }
+
+    @Override
+    public ProductDTO getProductById(int id) {
+        // ProductDTO productDTO = new ProductDTO();
+
+        // Optional<ProductEntity> optionProductEntity = productRepository.findById(id);
+        // if (optionProductEntity.isPresent()) {
+        // ProductEntity productEntity = optionProductEntity.get();
+        // productDTO.setId(productEntity.getId());
+        // productDTO.setName(productEntity.getName());
+        // productDTO.setPrice(productEntity.getPrice());
+        // if (!productEntity.getVariants().isEmpty()) {
+        // productDTO.setLink("http://localhost:8080/file/" +
+        // productEntity.getVariants().get(0).getImages());
+        // } else {
+        // productDTO.setLink("");
+        // }
+        // }
+
+        Optional<ProductEntity> optionProductEntity = productRepository.findById(id);
+        optionProductEntity.stream().map(productEntity -> {
+            ProductDTO productDTO = new ProductDTO();
+            productDTO.setId(productEntity.getId());
+            productDTO.setName(productEntity.getName());
+            productDTO.setPrice(productEntity.getPrice());
+            if (!productEntity.getVariants().isEmpty()) {
+                productDTO.setLink("http://localhost:8080/file/" + productEntity.getVariants().get(0).getImages());
+            } else {
+                productDTO.setLink("");
+            }
+            productDTO.setCategories(productEntity.getProductCategories().stream()
+                    .map(productCategory -> productCategory.getCategory().getName()).toList());
+
+            productDTO.setSizes(productEntity.getVariants().stream().map(variantEntity -> {
+                SizeDTO sizeDTO = new SizeDTO();
+                sizeDTO.setId(variantEntity.getSize().getId());
+                sizeDTO.setName(variantEntity.getSize().getName());
+
+                return sizeDTO;
+            }).toList());
+
+            productDTO.setColors(productEntity.getVariants().stream().map(variantEntity -> {
+                ColorDTO colorDTO = new ColorDTO();
+
+                colorDTO.setImages(variantEntity.getImages());
+                colorDTO.setName(variantEntity.getColor().getName());
+
+                colorDTO.setSizes(productEntity.getVariants().stream().map(variantEntity1 -> {
+                    SizeDTO sizeDTO = new SizeDTO();
+                    sizeDTO.setId(variantEntity1.getSize().getId());
+                    sizeDTO.setName(variantEntity1.getSize().getName());
+                    return sizeDTO;
+                }).toList());
+                return colorDTO;
+            }).toList());
+
+            return productDTO;
+        }).findFirst().orElseThrow(() -> new RuntimeException("Product not found"));
+
+        return null;
     }
 
 }

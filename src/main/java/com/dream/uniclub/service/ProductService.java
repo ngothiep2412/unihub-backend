@@ -9,4 +9,6 @@ public interface ProductService {
     public void addProduct(AddProductRequest addProductRequest);
 
     List<ProductDTO> getProduct(int numPage);
+
+    ProductDTO getProductById(int id);
 }

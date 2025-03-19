@@ -22,4 +22,5 @@ public class ColorEntity {
 
     @OneToMany(mappedBy = "color")
     private List<VariantEntity> variants;
+
 }
