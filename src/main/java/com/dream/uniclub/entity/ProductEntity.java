@@ -41,4 +41,7 @@ public class ProductEntity {
 
     @OneToMany(mappedBy = "product")
     private List<VariantEntity> variants;
+
+    @OneToMany(mappedBy = "product")
+    private List<ProductCategoryEntity> productCategories;
 }

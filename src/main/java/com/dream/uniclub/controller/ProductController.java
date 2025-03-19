@@ -44,4 +44,15 @@ public class ProductController {
         return new ResponseEntity<>(baseResponse, HttpStatus.OK);
     }
 
+    @GetMapping("/detail/{id}")
+    public ResponseEntity<?> getProductById(@PathVariable int id) {
+        BaseResponse baseResponse = new BaseResponse();
+
+        baseResponse.setStatusCode(200);
+        baseResponse.setMessage("Success !");
+        baseResponse.setData(productService.getProductById(id));
+
+        return new ResponseEntity<>(baseResponse, HttpStatus.OK);
+    }
+
 }
