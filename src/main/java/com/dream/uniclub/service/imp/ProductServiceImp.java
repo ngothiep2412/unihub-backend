@@ -74,10 +74,10 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public List<ProductDTO> getProduct() {
+    public List<ProductDTO> getProduct(int numPage) {
         // List<ProductEntity> listProductEntities = productRepository.findAll();
 
-        PageRequest page = PageRequest.of(0, 4);
+        PageRequest page = PageRequest.of(0, numPage);
 
         List<ProductDTO> listProductDTOs = productRepository.findAll(page).stream().map(item -> {
             ProductDTO productDTO = new ProductDTO();

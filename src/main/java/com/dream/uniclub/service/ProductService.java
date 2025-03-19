@@ -8,5 +8,5 @@ import com.dream.uniclub.request.AddProductRequest;
 public interface ProductService {
     public void addProduct(AddProductRequest addProductRequest);
 
-    List<ProductDTO> getProduct();
+    List<ProductDTO> getProduct(int numPage);
 }

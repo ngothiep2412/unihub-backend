@@ -5,7 +5,6 @@ import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -36,11 +35,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("*")); // Allow all origins
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Allow specific
-                                                                                                   // methods
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept")); // Allow specific
-                                                                                                   // headers
-
+        configuration.setAllowedMethods(Arrays.asList("*"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
 
@@ -66,10 +61,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> {
                     request.requestMatchers("/authen", "/file/**").permitAll();
                     // request.requestMatchers(HttpMethod.GET, "/product").has
-                    request.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
-
-                    request.requestMatchers("/product").hasAuthority("USER"); // hasRole() -> thì phải lưu role là //
-                                                                              // ROLE_ADMIN
+                    request.requestMatchers("/product/**").hasAuthority("USER"); // hasRole() -> thì phải lưu role là //
+                                                                                 // ROLE_ADMIN
                     request.requestMatchers("/category", "/brand").permitAll();
 
                     request.anyRequest().authenticated();
