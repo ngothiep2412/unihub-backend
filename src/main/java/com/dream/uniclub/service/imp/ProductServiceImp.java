@@ -88,6 +88,10 @@ public class ProductServiceImp implements ProductService {
                 productDTO.setLink("");
             }
 
+            productDTO.setCategories(item.getProductCategories().stream()
+                    .map(productCategory -> productCategory.getCategory().getName())
+                    .toList());
+
             return productDTO;
         }).toList();
 
@@ -145,7 +149,7 @@ public class ProductServiceImp implements ProductService {
         // }
 
         Optional<ProductEntity> optionProductEntity = productRepository.findById(id);
-        optionProductEntity.stream().map(productEntity -> {
+        return optionProductEntity.map(productEntity -> {
             ProductDTO productDTO = new ProductDTO();
             productDTO.setId(productEntity.getId());
             productDTO.setName(productEntity.getName());
@@ -155,6 +159,7 @@ public class ProductServiceImp implements ProductService {
             } else {
                 productDTO.setLink("");
             }
+
             productDTO.setCategories(productEntity.getProductCategories().stream()
                     .map(productCategory -> productCategory.getCategory().getName()).toList());
 
@@ -162,16 +167,13 @@ public class ProductServiceImp implements ProductService {
                 SizeDTO sizeDTO = new SizeDTO();
                 sizeDTO.setId(variantEntity.getSize().getId());
                 sizeDTO.setName(variantEntity.getSize().getName());
-
                 return sizeDTO;
             }).toList());
 
             productDTO.setColors(productEntity.getVariants().stream().map(variantEntity -> {
                 ColorDTO colorDTO = new ColorDTO();
-
                 colorDTO.setImages(variantEntity.getImages());
                 colorDTO.setName(variantEntity.getColor().getName());
-
                 colorDTO.setSizes(productEntity.getVariants().stream().map(variantEntity1 -> {
                     SizeDTO sizeDTO = new SizeDTO();
                     sizeDTO.setId(variantEntity1.getSize().getId());
@@ -182,9 +184,7 @@ public class ProductServiceImp implements ProductService {
             }).toList());
 
             return productDTO;
-        }).findFirst().orElseThrow(() -> new RuntimeException("Product not found"));
-
-        return null;
+        }).orElseThrow(() -> new RuntimeException("Product not found"));
     }
 
 }

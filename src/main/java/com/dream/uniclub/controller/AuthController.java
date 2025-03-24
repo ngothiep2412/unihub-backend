@@ -60,6 +60,7 @@ public class AuthController {
                 String token = jwtHelper.generateToken(data);
 
                 BaseResponse baseResponse = new BaseResponse();
+                baseResponse.setMessage("Success");
                 baseResponse.setData(token);
 
                 return new ResponseEntity<>(baseResponse, HttpStatus.OK);
